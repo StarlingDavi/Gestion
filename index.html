@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Campus Tasks</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="shell">
+
+        <aside class="side">
+            <div class="brand">
+                <div class="mark">CT</div>
+                <div class="name">
+                    <div class="t">Campus Tasks</div>
+                    <div class="s">Academic board</div>
+                </div>
+            </div>
+
+            <nav class="menu">
+                <a class="item active" href="#"><span>▦</span> Tablero</a>
+                <a class="item" href="#"><span>✓</span> Tareas</a>
+                <a class="item" href="#"><span>🗓</span> Calendario</a>
+                <a class="item" href="#"><span>👥</span> Miembros</a>
+            </nav>
+
+            <div class="side-footer">
+                <div class="hint">Persistencia: localStorage ✅</div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="bar">
+                <div class="bar-left">
+                    <div class="search">
+                        <span class="i">🔎</span>
+                        <input id="searchInput" type="text" placeholder="Buscar por título, materia, tag…" />
+                    </div>
+
+                    <div class="pills">
+                        <button class="pill" id="previewBtn">👁 Preview</button>
+
+                        <select class="pill" id="sortSelect">
+                            <option value="dateAsc">Fecha ↑</option>
+                            <option value="dateDesc">Fecha ↓</option>
+                            <option value="prioDesc">Prioridad ↓</option>
+                            <option value="prioAsc">Prioridad ↑</option>
+                        </select>
+
+                        <select class="pill" id="filterSelect">
+                            <option value="">Prioridad: Todas</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Media">Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bar-right">
+                    <div class="members" title="Members">
+                        <div class="m">A</div>
+                        <div class="m">J</div>
+                        <div class="m">Y</div>
+                        <div class="m more">+2</div>
+                    </div>
+                    <button class="cta" id="addTaskBtn">+ Nueva tarea</button>
+                </div>
+            </header>
+
+            <section class="board">
+                <section class="lane" data-status="In Progress">
+                    <div class="lane-head">
+                        <div class="lane-title">En progreso <span class="badge" id="countProgress">0</span></div>
+                        <button class="dots" type="button">⋯</button>
+                    </div>
+                    <div class="lane-body" id="colProgress"></div>
+                </section>
+
+                <section class="lane" data-status="Completed Task">
+                    <div class="lane-head">
+                        <div class="lane-title">Completadas <span class="badge" id="countCompleted">0</span></div>
+                        <button class="dots" type="button">⋯</button>
+                    </div>
+                    <div class="lane-body" id="colCompleted"></div>
+                </section>
+
+                <section class="lane" data-status="Over-Due">
+                    <div class="lane-head">
+                        <div class="lane-title">Atrasadas <span class="badge" id="countOverdue">0</span></div>
+                        <button class="dots" type="button">⋯</button>
+                    </div>
+                    <div class="lane-body" id="colOverdue"></div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="overlay" id="modalBackdrop" aria-hidden="true">
+        <div class="modal">
+            <div class="modal-top">
+                <div>
+                    <h3 id="modalTitle">Nueva tarea</h3>
+                    <p class="sub" id="modalSubtitle">Crea o edita sin salir del tablero.</p>
+                </div>
+                <button class="x" id="closeModalBtn" type="button">✕</button>
+            </div>
+
+            <form id="taskForm" class="modal-body">
+                <input type="hidden" id="taskId" />
+
+                <div class="g2">
+                    <label>Fecha de entrega
+                        <input type="date" id="dueDate" required />
+                    </label>
+                    <label>Hora
+                        <input type="time" id="time" />
+                    </label>
+                </div>
+
+                <div class="g2">
+                    <label>Materia / Área
+                        <input type="text" id="subject" required placeholder="Ej.: Auditoría / Inglés" />
+                    </label>
+                    <label>Etiqueta (tag)
+                        <input type="text" id="category" placeholder="Ej.: Proyecto / Lectura / Development" />
+                    </label>
+                </div>
+
+                <div class="g3">
+                    <label>Prioridad
+                        <select id="priority" required>
+                            <option value="Alta">Alta</option>
+                            <option value="Media" selected>Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </label>
+
+                    <label>Estado
+                        <select id="status" required>
+                            <option value="In Progress" selected>In Progress</option>
+                            <option value="Completed Task">Completed Task</option>
+                            <option value="Over-Due">Over-Due</option>
+                        </select>
+                    </label>
+
+                    <label>Progreso (0–10)
+                        <input type="number" id="progress" min="0" max="10" value="0" />
+                    </label>
+                </div>
+
+                <label>Título
+                    <input type="text" id="title" required placeholder="Ej.: User Flow" />
+                </label>
+
+                <label>Descripción
+                    <textarea id="description" placeholder="Detalles de la tarea…"></textarea>
+                </label>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn light" id="deleteBtn">Eliminar</button>
+                    <div class="spacer"></div>
+                    <button type="button" class="btn light" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn solid" id="saveBtn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
